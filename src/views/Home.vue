@@ -1,71 +1,57 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    
- 
-  <div class="card-container"  v-if="this.$store.state.count && (this.$store.state.count).length >= 1  ">
-              <h1 class="center">Todo List</h1>
-  <select class="browser-default" style="font-size:17px;">
-    <option value="" disabled selected>Choose your sort</option>
-    <option value="1">Length</option>
-    <option value="2">Priority</option>
-    <option value="3">Date</option>
-  </select>
-      <div  class="card-panel" v-for="(item,index) in  Array(this.$store.state.count)[0]"  :key="item.props">
-        <!-- <h1>{{item}} //{{index}} </h1>  -->
-      
-           <Card :msg = 'item.name' :more="true"  :index='index' />
-      </div>
+  <div
+    class="home container bg-light p-3"
+    v-if="
+      $store.state.tasks &&
+        $store.state.tasks.find(
+          (element) =>
+            element.l_id == '' && new Date(element.date) - new Date() > 0
+        )
+    "
+  >
+    <button class="btn btn-primary mb-3" v-on:click="sort_by_pr()">
+      Сортировать по приоритету
+    </button>
 
+    <div v-for="(task, index) in $store.state.tasks" :key="index">
+      <Tek
+        v-if="task.l_id == '' && new Date(task.date) - new Date() > 0"
+        :task1="task"
+        :lists="$store.state.lists"
+        :is_sorted="get_sort"
+      />
     </div>
- <div v-else-if="this.$store.state.count">
-     <Card :msg = 'this.$store.state.count.name' />
- </div>
-
+  </div>
+  <div v-else>
+    <h1 class="text-center text-danger">Не обнаружено задач</h1>
   </div>
 </template>
 
-
-<style>
-  div.card-container {
-    max-width: 80%;
-    margin:auto;
-    border: 1px dashed red;
-    padding: 10px !important;
-    background:	rgb(192,192,192);
-  /* -webkit-column-width: 50rem;
-  -webkit-column-gap: 1rem; */
-  padding: 0;
-}
-
-.card-panel {
-  display: inline-block;
-  padding: 0;
-  width: 100%;
-}
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
-// @ is an alias to /src
-
-  import Card from "../components/Card"
+import Tek from "../components/Task";
 
 export default {
-
-    name : 'home',
-  data : function(){
+  name: "Home",
+  data() {
     return {
-      test : 0
-    }
-  
+      is_sort: false,
+    };
   },
-  methods : {
-
-    
+  components: { Tek },
+  methods: {
+    sort_by_pr() {
+      if (this.$store.state.tasks) {
+        this.is_sort = true;
+        this.$store.state.tasks.sort((a, b) =>
+          +a.is_quickly < +b.is_quickly ? 1 : -1
+        );
+      }
+    },
   },
- 
-    components : {
-        Card
-    }
-}
+  computed: {
+    get_sort() {
+      return this.is_sort;
+    },
+  },
+};
 </script>

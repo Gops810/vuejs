@@ -1,37 +1,41 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
-
+import Home from '../views/Home.vue'
+import Task from '../views/Create_task'
+import List from '../views/Create_list'
+import Error from '../views/Error'
+import Lists from '../views/Lists'
 Vue.use(VueRouter)
 
 const routes = [{
         path: '/',
         name: 'Home',
-        component: () =>
-            import ('../views/Home.vue')
+        component: Home
     },
     {
-        path: '/about/:id',
-        name: 'About',
-
-        component: () =>
-            import ( /* webpackChunkName: "about" */ '../views/About.vue')
+        path: "/create_task",
+        name: "task",
+        component: Task
     },
     {
-        path: '/create',
-        name: 'Create',
-        component: () =>
-            import ( /* webpackChunkName: "about" */ '../views/Create.vue')
+        path: "/create_list",
+        name: "list",
+        component: List
     },
     {
         path: "*",
-        component: () =>
-            import ( /* webpackChunkName: "about" */ '../views/Error.vue')
+        name: "error",
+        component: Error
+    },
+    {
+        path: "/collestions",
+        name: "lists",
+        component: Lists
     }
+
 ]
 
 const router = new VueRouter({
-    base: process.env.BASE_URL,
     routes
 })
 

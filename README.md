@@ -1,4 +1,4 @@
-# todo_app
+# vp
 
 ## Project setup
 ```
