@@ -105,12 +105,10 @@ export default {
         this.task.t_id = Date.now();
         this.task.date = this.$refs.datapicker.$el.querySelector("input").value;
         this.$store.dispatch("Add_task", this.task);
-        document.location.reload();
+        setTimeout(() => {
+          document.location.reload();
+        }, 50);
       }
-      // let dat = new Date();
-      // let second = new Date("2021-02-23T11:40:19.393Z");
-      // console.log((second - dat) / 1000 / 60 / 60 / 24);
-     // console.log(this.$refs.datapicker.$el.querySelector("input").value);
     },
     ret_dat() {
       var tomorrow = new Date();

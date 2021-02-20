@@ -39,14 +39,11 @@ export default {
     send() {
       if (this.list.name.replace(/ +/g, " ").trim()) {
         this.list.l_id = Date.now();
-        //console.log( this.list.l_id);
+
         this.$store.dispatch("Add_list", this.list);
         document.location.reload();
       }
     },
-  },
-  mounted() {
-    // console.log(this.$store.state);
   },
 };
 </script>

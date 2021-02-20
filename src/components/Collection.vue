@@ -7,24 +7,30 @@
     <div class="drop-content w-75 mx-auto cloose" v-if="tasks != null">
       <ul class="list-group">
         <div v-for="(task, index) in tasks" :key="index">
-          
-          <li class="list-group-item" v-if="task.l_id == list.l_id && ((new Date(task.date) - new Date()) > 0)">
-             <button type="button" class="btn btn-primary">
-  Активно до: <span class="badge badge-light">{{task.date}}</span>
-</button><br>
+          <li
+            class="list-group-item"
+            v-if="
+              task.l_id == list.l_id && new Date(task.date) - new Date() > 0
+            "
+          >
+            <button type="button" class="btn btn-primary">
+              Активно до:
+              <span class="badge badge-light">{{ task.date }}</span></button
+            ><br />
             <input
               type="checkbox"
               v-model="task.complete"
-              v-on:click="cng(index)"
+              v-on:click="trigger(index)"
             />
-           
+
             <span
-              class="ml-1" style="font-size:20px;"
+              class="ml-1"
+              style="font-size:20px;"
               v-bind:class="{
                 'text-throw': task.complete,
                 'text-muted': task.complete,
-                
-                  'strong' : task.is_quickly
+
+                strong: task.is_quickly,
               }"
               >{{ task.name }}</span
             >
@@ -63,29 +69,20 @@
 
 <script>
 export default {
-  // props: {
-  //   id: Number,
-  //   list: Object,
-  //   tasks: {
-  //     value: [String, Array],
-  //   },
-  // },
   props: ["id", "list", "tasks"],
 
   methods: {
     def: function(id) {
-      // var all_drop = document.querySelectorAll(".drop");
       var all_content = document.querySelectorAll(".drop-content");
-      // console.log(all_drop);
-      //  console.log(all_content[id]);
-      for(let count = 0; count < all_content.length ; count++)
-      {
-        if(!all_content[count].classList.contains("cloose") && count != id)all_content[count].classList.toggle("cloose");
+
+      for (let count = 0; count < all_content.length; count++) {
+        if (!all_content[count].classList.contains("cloose") && count != id)
+          all_content[count].classList.toggle("cloose");
       }
 
       if (this.tasks != null) {
         all_content[id].classList.toggle("cloose");
-        // console.log(this.$store.state.tasks);
+
         if (
           all_content[id]
             .getElementsByTagName("ul")[0]
@@ -100,26 +97,11 @@ export default {
         alert("в коллекции нет задач ");
       }
     },
-   async cng(id) {
-      
-      setTimeout(()=>{
-      this.rn(id);
-      //this.$store.commit("SetTasks");
-      },50);
-      // this.task1.complete = !this.task1.complete;
-      // this.temp = this.task1.complete;
-      
+    async trigger(id) {
+      setTimeout(() => {
+        this.$store.dispatch("update_task", id);
+      }, 50);
     },
-    async rn(id){
-         await fetch("http://localhost:3000/tasks/" + this.tasks[id].id, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify(this.tasks[id]),
-      });
-    }
-
   },
 };
 </script>

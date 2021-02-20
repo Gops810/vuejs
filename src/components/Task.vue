@@ -9,7 +9,13 @@
      "
     >
       <div class="btn-group" role="group">
-        <button v-on:click="log(task1.id)" type="button" class="btn btn-danger">
+        <button
+          v-on:click="
+            $store.dispatch('delete_task', { id: task1.id, is_sort: is_sorted })
+          "
+          type="button"
+          class="btn btn-danger"
+        >
           Удалить <i class="far fa-trash-alt"></i>
         </button>
         <button
@@ -39,10 +45,14 @@
       </div>
 
       <button type="button" class="btn btn-primary">
-  Активно до: <span class="badge badge-light">{{task1.date}}</span>
-</button>
+        Активно до: <span class="badge badge-light">{{ task1.date }}</span>
+      </button>
       <div class="text pl-2 pt-1" style="margin-bottom: -10px;">
-        <input type="checkbox" v-model="temp" v-on:click="cng(task1.id)" />
+        <input
+          type="checkbox"
+          v-model="temp"
+          v-on:click="switch_status(task1.id)"
+        />
         <span
           class="ml-1"
           v-bind:class="{
@@ -74,6 +84,7 @@ export default {
   data() {
     return {
       temp: "",
+      temp2: Boolean,
     };
   },
   created() {
@@ -81,58 +92,15 @@ export default {
   },
   props: ["task1", "lists", "is_sorted"],
   methods: {
-    async log(id) {
-      //console.log(id);
-      await fetch("http://localhost:3000/tasks/" + id, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-      });
-      this.$store.commit("SetTasks");
-
-      if (this.is_sorted) {
-        setTimeout(() => {
-          this.$store.state.tasks.sort((a, b) =>
-            +a.is_quickly < +b.is_quickly ? 1 : -1
-          );
-        }, 200);
-        console.log(this.is_sorted);
-      }
-    },
-    cng(id) {
+    switch_status(id) {
       this.task1.complete = !this.task1.complete;
       this.temp = this.task1.complete;
-      fetch("http://localhost:3000/tasks/" + id, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify(this.task1),
-      });
-      this.$store.commit("SetTasks");
-
-      if (this.is_sorted) {
-        setTimeout(() => {
-          this.$store.state.tasks.sort((a, b) =>
-            +a.is_quickly < +b.is_quickly ? 1 : -1
-          );
-        }, 200);
-        console.log(this.is_sorted);
-      }
+      this.$store.dispatch("switch_task_status", { id: id, task: this.task1 });
+      this.$store.dispatch("get_all_tasks");
     },
     async l_id(id) {
       this.task1.l_id = id;
-
-      await fetch("http://localhost:3000/tasks/" + this.task1.id, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify(this.task1),
-      });
-      this.$store.commit("SetTasks");
-
+      this.$store.dispatch("set_lid", this.task1);
       if (this.is_sorted) {
         setTimeout(() => {
           this.$store.state.tasks.sort((a, b) =>

@@ -1,25 +1,24 @@
 <template>
   <div id="app">
-    <HelloWorld v-if="this.$route.name != 'error'" />
+    <NavBar v-if="this.$route.name != 'error'" />
 
     <router-view />
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
+import NavBar from "./components/NavBar";
 
 export default {
   name: "app",
   data: function() {
     return {};
   },
-  components: { HelloWorld },
+  components: { NavBar },
   created(){
-    this.$store.commit("SetList");
-     this.$store.commit("SetTasks");
-
-      console.log(this.$store.state);
+    this.$store.dispatch("get_all_tasks");
+     this.$store.dispatch("get_all_lists");
+     
   }
 };
 </script>
